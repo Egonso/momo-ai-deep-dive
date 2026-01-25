@@ -1,0 +1,37 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // User Profiles: Users can read/write their own profile
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // RSVPs: 
+    // - Read: User can see their own RSVP
+    // - Write: User can create/update their own RSVP
+    match /rsvps/{rsvpId} {
+      // Allow read if: 
+      // 1. User is authenticated AND
+      // 2. Either the document exists and belongs to user OR
+      // 3. The document ID ends with the user's UID (for checking non-existent docs)
+      allow read: if request.auth != null && (
+        (resource != null && resource.data.uid == request.auth.uid) || 
+        rsvpId.matches('.*_' + request.auth.uid)
+      );
+      
+      // Allow write if User is authenticated and setting their own UID
+      // Allow create/update if User is authenticated and setting their own UID
+      allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
+      allow update: if request.auth != null && request.resource.data.uid == request.auth.uid;
+      
+      // Allow delete if User is authenticated and owns the existing document
+      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+    }
+    
+    // Fallback: Deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

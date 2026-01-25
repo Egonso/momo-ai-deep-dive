@@ -1,0 +1,21 @@
+# Momo AI Deep Dive
+
+## About
+The "Momo AI Deep Dive" is a monthly workshop series in Salzburg, Austria, focused on Advanced AI Skills, Coding, and Automation. It is hosted by Momo Feichtinger (Strategenwerk).
+
+## Core Topics
+- **AI Coding**: Moving from using tools to building software.
+- **Automation**: Automating workflows with AI.
+- **RAG & Vector DBs**: Building custom knowledge bases.
+- **Agentic AI**: Creating autonomous agents.
+
+## Event Details
+- **Next Event**: Monday, Feb 2nd 2026.
+- **Time**: 19:30 - 21:30.
+- **Where**: Penthouse Büro, Magazinstraße 4, 5020 Salzburg.
+- **Format**: Hands-on Deep Dives, live coding, networking.
+
+## Links
+- **RSVP & Stream**: https://kideepdive.strategenwerk.com
+- **Host**: https://strategenwerk.com
+- **Contact**: office@momofeichtinger.com

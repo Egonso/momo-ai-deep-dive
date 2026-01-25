@@ -1,26 +1,86 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ocean-depth: var(--ocean-depth);
+  --color-ocean-surface: var(--ocean-surface);
+  --color-sand: var(--sand);
+  --color-theme-primary: var(--theme-primary);
+  --color-theme-secondary: var(--theme-secondary);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  /* Adding a rounder display font if possible, fallback to sans */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* 
+  THEME PHILOSOPHY: "Deep Dive"
+  Light Mode: "The Beach" - Warm, Sandy, Approachable.
+  Dark Mode: "The Abyss" - Deep Blue, Bioluminescent Glows, Mystery.
+*/
+
+:root {
+  /* LIGHT MODE (Default - usually overrides by system pref, but we can force based on user pref) 
+     Actually, let's keep Dark Mode as default for "Deep Dive" feel, but allow a Light Mode override class if needed.
+     The user requested "Deep Dive" elements for dark mode and "Nice Beige" for light.
+  */
+
+  /* DARK MODE DEFAULT (The Abyss) */
+  --background: #020617;
+  /* Slate 950 - Very Deep Blue/Black */
+  --foreground: #e2e8f0;
+  /* Slate 200 */
+
+  --ocean-depth: #0f172a;
+  /* Slate 900 */
+  --ocean-surface: #1e293b;
+  /* Slate 800 */
+
+  --theme-primary: #06b6d4;
+  /* Cyan 500 - Bioluminescent */
+  --theme-secondary: #0ea5e9;
+  /* Sky 500 */
+
+  --font-geist-sans: "Inter", sans-serif;
+}
+
+
+
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased transition-colors duration-500;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+    background-image:
+      radial-gradient(circle at 50% 0%, var(--theme-primary) 0%, transparent 25%),
+      radial-gradient(circle at 100% 100%, var(--theme-secondary) 0%, transparent 25%);
+    background-attachment: fixed;
+    background-size: 100% 100%;
+    /* Subtle opacity for the gradient so it doesn't overwhelm */
+    position: relative;
+  }
+
+  body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--background);
+    opacity: 0.9;
+    z-index: -1;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl;
+  }
+
+
+
+  .water-glow {
+    box-shadow: 0 0 40px -10px var(--theme-primary);
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
 }

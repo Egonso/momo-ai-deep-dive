@@ -1,0 +1,87 @@
+export type EventTheme = 'emerald' | 'amber' | 'rose' | 'sky' | 'violet' | 'ocean';
+
+export interface EventAsset {
+    label: string;
+    type: 'pdf' | 'link' | 'code' | 'video';
+    url: string;
+}
+
+export interface EventConfig {
+    id: string;
+    title: string;
+    description: string;
+    longDescription?: string;
+    theme: EventTheme;
+    date: string; // ISO 8601
+    revealAt: string; // ISO 8601
+    durationHours: number;
+    location: string;
+    address: string;
+    capacity: number;
+    youtubeId?: {
+        live?: string;
+        replay?: string;
+    };
+    assets: EventAsset[];
+    takeaways?: string[];
+}
+
+export const EVENTS: EventConfig[] = [
+    {
+        id: "feb-2026-skills",
+        title: "Agent Skills: Vom Tool zum Alleskönner",
+        description: "Wie du ein 'KI Coding Tool' in deinen persönlichen Super-Assistenten verwandelst. Wir machen Tools zu Fähigkeiten.",
+        longDescription: "Wir nutzen ein Tool, das viele bisher nur als 'KI Coding Tool' kannten, und verwandeln es in einen ALLESKÖNNER - der von jedem mit einfachen Prompts ohne Coden bedient werden kann. Jedes Tool das ich bisher gezeigt habe kann es nicht nur integrieren, sondern zu einem wiederholbaren und teilbaren Prozess machen. Es ist wie wir in Zukunft mit dem Computer umgehen.",
+        theme: "ocean", // New theme!
+        date: "2026-02-02T19:30:00.000Z", // Next Event
+        revealAt: "2026-01-10T08:00:00.000Z", // Visible NOW
+        durationHours: 2,
+        location: "Penthouse Büro",
+        address: "Magazinstraße 4, 5020 Salzburg",
+        capacity: 20,
+        takeaways: [
+            "Automatische Invoices & Google Drive Sync",
+            "Video Editing & Cutting Workflow",
+            "High-End PDF Poster & Präsentationen (besser als Gamma)",
+            "Automatisches Datei- & Download-Management",
+            "Recherche & Bilderstellung im eigenen CI"
+        ],
+        assets: [
+            { label: "87k Skills Library", type: "link", url: "#" }
+        ],
+        youtubeId: {
+            live: "dQw4w9WgXcQ" // Rick Roll Placeholder for Live Test
+        }
+    },
+    {
+        id: "mar-2026-rag",
+        title: "RAG & Vector Databases Masterclass",
+        description: "Dein 'Second Brain' bauen mit Pinecone und Embeddings.",
+        theme: "amber",
+        date: "2026-03-02T19:30:00.000Z", // 1st Monday March
+        revealAt: "2026-02-03T08:00:00.000Z",
+        durationHours: 3,
+        location: "Penthouse Büro",
+        address: "Magazinstraße 4, 5020 Salzburg",
+        capacity: 25,
+        assets: []
+    }
+];
+
+export const getActiveEvent = () => {
+    const now = new Date().toISOString();
+    const visibleEvents = EVENTS.filter(e => e.revealAt <= now);
+    visibleEvents.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return visibleEvents[0] || null;
+}
+
+export const getEventStatus = (event: EventConfig) => {
+    const now = new Date();
+    const start = new Date(event.date);
+    const end = new Date(start.getTime() + event.durationHours * 60 * 60 * 1000);
+    const buffer = 3 * 60 * 60 * 1000;
+
+    if (now < start) return 'UPCOMING';
+    if (now >= start && now <= new Date(end.getTime() + buffer)) return 'LIVE';
+    return 'PAST';
+}
