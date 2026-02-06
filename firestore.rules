@@ -2,33 +2,60 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return request.auth.token.email == 'mo.feich@gmail.com';
+    }
+
     // User Profiles: Users can read/write their own profile
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }
     
     // RSVPs: 
-    // - Read: User can see their own RSVP
-    // - Write: User can create/update their own RSVP
+    // - Read: User can see their own RSVP OR Admin can see all
+    // - Write: User can create/update their own RSVP OR Admin can write all
     match /rsvps/{rsvpId} {
-      // Allow read if: 
-      // 1. User is authenticated AND
-      // 2. Either the document exists and belongs to user OR
-      // 3. The document ID ends with the user's UID (for checking non-existent docs)
+      // Allow reading if:
+      // 1. It's my own RSVP (checked via uid field)
+      // 2. I am Admin
       allow read: if request.auth != null && (
-        (resource != null && resource.data.uid == request.auth.uid) || 
-        rsvpId.matches('.*_' + request.auth.uid)
+        resource.data.uid == request.auth.uid || 
+        request.auth.token.email == 'mo.feich@gmail.com'
       );
       
-      // Allow write if User is authenticated and setting their own UID
-      // Allow create/update if User is authenticated and setting their own UID
-      allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
-      allow update: if request.auth != null && request.resource.data.uid == request.auth.uid;
-      
-      // Allow delete if User is authenticated and owns the existing document
-      allow delete: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow create: if request.auth != null && (request.auth.token.email == 'mo.feich@gmail.com' || request.resource.data.uid == request.auth.uid);
+      allow update: if request.auth != null && (request.auth.token.email == 'mo.feich@gmail.com' || request.resource.data.uid == request.auth.uid);
+      allow delete: if request.auth != null && (request.auth.token.email == 'mo.feich@gmail.com' || resource.data.uid == request.auth.uid);
+    }
+
+    // Feedback:
+    // - Create: Any auth user
+    // - Read: Admin Only
+    // - Update: Admin Only
+    match /feedback/{feedbackId} {
+      allow create: if request.auth != null;
+      allow read, update, delete: if request.auth != null && isAdmin();
     }
     
+    // Forum / Comments:
+    // - Read: Any auth user
+    // - Create: Any auth user
+    // - Delete: Author OR Admin
+    match /comments/{commentId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
+      allow delete: if request.auth != null && (isAdmin() || resource.data.uid == request.auth.uid);
+    }
+    
+    // Events:
+    // - Read: Public (so users see correct capacity)
+    // - Write: Admin Only (for capacity updates)
+    match /events/{eventId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
     // Fallback: Deny everything else
     match /{document=**} {
       allow read, write: if false;

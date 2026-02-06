@@ -19,13 +19,13 @@ interface Attendee {
 }
 
 // VEVENT Helper for QR Code
-const generateQrData = (event: EventConfig) => {
+const generateQrData = (event: EventConfig, userId?: string) => {
     const start = new Date(event.date).toISOString().replace(/-|:|\.\d\d\d/g, "");
     return `BEGIN:VEVENT
 SUMMARY:${event.title}
 DTSTART:${start}
 LOCATION:${event.location}
-DESCRIPTION:Support: office@momofeichtinger.com / WA +4368181655313
+DESCRIPTION:Ref:${userId || 'Guest'} | Support: office@momofeichtinger.com
 END:VEVENT`;
 };
 
@@ -33,6 +33,7 @@ interface TicketWalletProps {
     event: EventConfig;
     ticketType: 'in-person' | 'online';
     user: {
+        uid: string;
         displayName: string | null;
         email: string | null;
         photoURL: string | null;
@@ -94,7 +95,7 @@ END:VCALENDAR`;
             const pdf = new jsPDF({
                 orientation: 'landscape',
                 unit: 'px',
-                format: [600, 300] // Custom size matching the aspect ratio roughly
+                format: [800, 400] // Custom size matching the new template
             });
 
             const imgProps = pdf.getImageProperties(dataUrl);
@@ -119,7 +120,7 @@ END:VCALENDAR`;
             url: window.location.origin
         };
 
-        if (navigator.share) {
+        if (typeof navigator !== 'undefined' && navigator.share) {
             try {
                 await navigator.share(shareData);
             } catch (err) {
@@ -215,14 +216,11 @@ END:VCALENDAR`;
                 </div>
             </div>
 
-            {/* The Ticket Body - CAPTURE REF */}
-            <div ref={ticketRef} className="relative bg-white/5 rounded-2xl p-6 border border-white/5 overflow-hidden group">
-                {/* Decorative Elements */}
+            {/* The Ticket Body - VISUAL (Dark Mode) */}
+            <div className="relative bg-white/5 rounded-2xl p-6 border border-white/5 overflow-hidden group">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-theme-primary/10 blur-[50px] rounded-full -mr-16 -mt-16 pointer-events-none" />
-
                 <div className="relative z-10 flex justify-between items-start">
                     <div className="space-y-4">
-                        {/* Event Info */}
                         <div className="space-y-1">
                             <p className="text-xs text-zinc-500 uppercase tracking-wider font-semibold">Event</p>
                             <p className="text-white font-bold leading-tight">{event.title}</p>
@@ -231,40 +229,87 @@ END:VCALENDAR`;
                             <p className="text-xs text-zinc-500 uppercase tracking-wider font-semibold">Wann</p>
                             <div className="flex items-center gap-2 text-zinc-300 text-sm">
                                 <Calendar className="w-4 h-4 text-theme-primary" />
-                                {formatDate(event.date)}, 19:30
+                                {formatDate(event.date)}, {new Date(event.date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}
                             </div>
                         </div>
-
-                        {/* Attendee List in Ticket */}
                         {attendees && attendees.length > 0 && (
                             <div className="space-y-1 pt-2 border-t border-white/5">
                                 <p className="text-xs text-zinc-500 uppercase tracking-wider font-semibold">Gäste</p>
                                 <div className="text-sm text-white/90 space-y-0.5">
                                     {attendees.map((a, i) => (
-                                        <div key={i} className="flex items-center gap-2">
-                                            <span className="w-1 h-1 bg-theme-primary rounded-full" />
-                                            {a.name}
-                                        </div>
+                                        <div key={i} className="flex items-center gap-2">{a.name}</div>
                                     ))}
                                 </div>
                             </div>
                         )}
                     </div>
-
-                    {/* QR Code Area */}
-                    <div className="bg-white p-2 rounded-lg shadow-lg rotate-3 group-hover:rotate-0 transition-transform duration-300">
-                        <QRCode
-                            value={generateQrData(event)}
-                            size={80}
-                            className="w-20 h-20"
-                            level="M"
-                        />
+                    {/* Visual QR - Straight now */}
+                    <div className="bg-white p-2 rounded-lg shadow-lg">
+                        <QRCode value={generateQrData(event, user.uid || 'guest')} size={80} className="w-20 h-20" level="M" />
                     </div>
                 </div>
+                <div className="absolute bottom-2 right-4 text-[10px] text-white/20 font-mono">kideepdive.strategenwerk.com</div>
+            </div>
 
-                {/* Footer URL for image context */}
-                <div className="absolute bottom-2 right-4 text-[10px] text-white/20 font-mono">
-                    kideepdive.strategenwerk.com
+            {/* PREMIUM PRINT TEMPLATE (Hidden) */}
+            <div style={{ position: 'absolute', top: -9999, left: -9999 }}>
+                <div ref={ticketRef} className="w-[800px] h-[400px] bg-white text-black font-sans relative flex overflow-hidden">
+                    {/* Left: Event Info */}
+                    <div className="w-[70%] p-12 flex flex-col justify-between border-r-2 border-black border-dashed">
+                        <div>
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="px-3 py-1 bg-black text-white font-bold text-sm tracking-widest uppercase">
+                                    Ticket
+                                </div>
+                                <span className="text-xs tracking-widest uppercase opacity-60">Momo's AI Deep Dive</span>
+                            </div>
+
+                            <h1 className="text-5xl font-black leading-[1.1] mb-8 uppercase tracking-tight">
+                                {event.title}
+                            </h1>
+
+                            <div className="grid grid-cols-2 gap-8">
+                                <div>
+                                    <p className="text-xs uppercase tracking-widest opacity-50 font-bold mb-1">Datum</p>
+                                    <p className="text-xl font-bold">{formatDate(event.date)}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs uppercase tracking-widest opacity-50 font-bold mb-1">Start</p>
+                                    <p className="text-xl font-bold">{new Date(event.date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} Uhr</p>
+                                </div>
+                                <div className="col-span-2">
+                                    <p className="text-xs uppercase tracking-widest opacity-50 font-bold mb-1">Location</p>
+                                    <p className="text-lg font-medium leading-tight">{event.location}, {event.address}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p className="text-xs text-black/40 font-mono mb-1">
+                                Order ID: {event.id.slice(0, 8).toUpperCase()}-{user.uid.slice(0, 4).toUpperCase()}
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Right: User & Access */}
+                    <div className="w-[30%] p-8 bg-black text-white flex flex-col items-center justify-center text-center relative z-10">
+                        <div className="mb-6 bg-white p-3 rounded-xl">
+                            <QRCode value={generateQrData(event, user.uid || 'guest')} size={140} level="M" />
+                        </div>
+
+                        <p className="text-xs uppercase tracking-widest opacity-60 mb-1">Ticket Type</p>
+                        <h2 className="text-2xl font-black uppercase tracking-wider mb-8 text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400" style={{ WebkitTextFillColor: 'transparent' }}>
+                            {ticketType === 'in-person' ? 'Penthouse' : 'Online'}
+                        </h2>
+
+                        <div className="w-full border-t border-white/20 pt-6">
+                            <p className="text-xs uppercase tracking-widest opacity-60 mb-2">Attendee</p>
+                            <p className="font-bold truncate w-full px-4">{attendees?.[0]?.name || user.displayName || 'Guest'}</p>
+                            {attendees && attendees.length > 1 && (
+                                <p className="text-xs opacity-50 mt-1">+ {attendees.length - 1} Guests</p>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -278,13 +323,21 @@ END:VCALENDAR`;
                     </Button>
 
                     {ticketType === 'online' && (
-                        <div className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg text-sm text-blue-200 flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center shrink-0 animate-pulse">
-                                <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-                            </div>
-                            <div>
-                                <p className="font-bold">Live Stream Zugang</p>
-                                <p className="text-xs opacity-70">Der Stream startet hier auf der Startseite um 19:30.</p>
+                        <div className="p-4 bg-gradient-to-r from-blue-900/40 to-purple-900/40 border border-blue-500/50 rounded-xl relative overflow-hidden group">
+                            <div className="absolute inset-0 bg-blue-500/10 blur-xl group-hover:bg-blue-500/20 transition-colors"></div>
+                            <div className="relative z-10 flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center shadow-lg shadow-blue-500/20 animate-pulse">
+                                        <div className="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-1"></div>
+                                    </div>
+                                    <div>
+                                        <p className="font-bold text-lg text-white">Live Stream Link</p>
+                                        <p className="text-xs text-blue-200">Startet um {new Date(event.date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} Uhr</p>
+                                    </div>
+                                </div>
+                                <Button size="sm" className="bg-blue-500 hover:bg-blue-400 text-white border-none" onClick={() => window.open(event.youtubeId?.live || '#', '_blank')}>
+                                    Öffnen
+                                </Button>
                             </div>
                         </div>
                     )}
@@ -306,10 +359,26 @@ END:VCALENDAR`;
                         .ics Datei laden
                     </Button>
                 </div>
-                <Button variant="outline" size="sm" className="w-full h-auto flex flex-col gap-1 py-2" onClick={handleShare}>
-                    {copied ? <Check className="w-5 h-5 mb-1 text-green-500" /> : <Share2 className="w-5 h-5 mb-1" />}
-                    <span>{copied ? 'Link Kopiert' : 'Event Teilen'}</span>
-                </Button>
+
+                <div className="flex flex-col gap-2">
+                    <Button variant="outline" size="sm" className="w-full h-auto flex flex-col gap-1 py-3" onClick={() => {
+                        navigator.clipboard.writeText("https://aideepdives.vercel.app");
+                        setCopied(true);
+                        setTimeout(() => setCopied(false), 2000);
+                    }}>
+                        {copied ? <Check className="w-6 h-6 mb-1 text-green-500" /> : <Copy className="w-6 h-6 mb-1" />}
+                        <span>{copied ? 'Link Kopiert' : 'Link kopieren'}</span>
+                        <span className="text-[9px] text-zinc-500 font-normal">für WhatsApp / Socials</span>
+                    </Button>
+
+                    {/* Native Share only if supported */}
+                    {typeof navigator !== 'undefined' && typeof navigator.share === 'function' && (
+                        <Button variant="ghost" size="sm" className="w-full text-xs text-zinc-500 hover:text-white" onClick={handleShare}>
+                            <Share2 className="w-3 h-3 mr-2" />
+                            Mehr Optionen
+                        </Button>
+                    )}
+                </div>
             </div>
 
             <div className="pt-4 border-t border-white/5 text-center space-y-4">

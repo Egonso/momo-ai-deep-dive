@@ -72,6 +72,8 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
 };
 
+import { FeedbackWidget } from "@/components/feedback/FeedbackWidget";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -83,6 +85,7 @@ export default function RootLayout({
         className={`${inter.variable} ${outfit.variable} antialiased`}
       >
         {children}
+        <FeedbackWidget />
       </body>
     </html>
   );

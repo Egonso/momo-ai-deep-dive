@@ -80,7 +80,7 @@ export function CommentSection({ eventId, user }: CommentSectionProps) {
             const payload: any = {
                 eventId,
                 text: newComment,
-                userId: user.uid,
+                uid: user.uid,
                 userName: user.displayName || user.email?.split('@')[0] || 'Anonymous',
                 userPhoto: user.photoURL || '',
                 createdAt: serverTimestamp()

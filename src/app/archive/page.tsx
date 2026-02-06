@@ -4,7 +4,7 @@ import { EVENTS } from "@/data/events";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { Calendar, Play, Download, ArrowLeft, Lock, MessageSquare } from "lucide-react";
+import { Calendar, Play, Download, ArrowLeft, Lock, MessageSquare, Video, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { CommentSection } from "@/components/forum/CommentSection";
 import { formatDate } from "@/lib/utils";
@@ -18,13 +18,17 @@ export default function ArchivePage() {
     const [hasAccess, setHasAccess] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    // Filter Past Events
-    const pastEvents = EVENTS.filter(e => {
-        const end = new Date(new Date(e.date).getTime() + e.durationHours * 60 * 60 * 1000);
-        return new Date() > end;
+    // Show events that are revealed (so we can discuss them before they happen)
+    const activeEvents = EVENTS.filter(e => {
+        return new Date(e.revealAt) <= new Date();
     }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     useEffect(() => {
+        // Safety timeout to prevent "forever loading"
+        const timer = setTimeout(() => {
+            if (loading) setLoading(false);
+        }, 3000);
+
         const unsubscribe = onAuthStateChanged(auth, async (u) => {
             setUser(u);
             if (u) {
@@ -32,8 +36,12 @@ export default function ArchivePage() {
             } else {
                 setLoading(false);
             }
+            clearTimeout(timer);
         });
-        return () => unsubscribe();
+        return () => {
+            unsubscribe();
+            clearTimeout(timer);
+        };
     }, []);
 
     const checkAccess = async (u: User) => {
@@ -132,45 +140,17 @@ export default function ArchivePage() {
 
                 {/* Forum Feed Layout */}
                 <div className="space-y-12">
-                    {pastEvents.length === 0 ? (
+                    {activeEvents.length === 0 ? (
                         <div className="border border-white/5 bg-slate-900/40 rounded-3xl p-8 md:p-12 text-center space-y-6 max-w-2xl mx-auto">
+                            {/* ... Empty State (kept mostly same but rare to hit now since we have a revealed event) ... */}
                             <div className="w-20 h-20 bg-gradient-to-br from-theme-primary/20 to-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
                                 <Play className="w-8 h-8 text-white/50" />
                             </div>
                             <h2 className="text-2xl font-bold text-white">Noch ist es ruhig hier...</h2>
-                            <p className="text-slate-400 leading-relaxed">
-                                Das Archiv füllt sich nach dem ersten Deep Dive am <strong>2. Februar 2026</strong>.
-                                <br /><br />
-                                Hier findest du dann:
-                            </p>
-                            <ul className="text-left max-w-sm mx-auto space-y-3 text-slate-300">
-                                <li className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center shrink-0">
-                                        <Play className="w-4 h-4 text-theme-primary" />
-                                    </div>
-                                    <span>Full HD Recordings & Transkripte</span>
-                                </li>
-                                <li className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center shrink-0">
-                                        <Download className="w-4 h-4 text-theme-primary" />
-                                    </div>
-                                    <span>Assets, Code-Snippets & Prompts</span>
-                                </li>
-                                <li className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center shrink-0">
-                                        <MessageSquare className="w-4 h-4 text-theme-primary" />
-                                    </div>
-                                    <span>Community Q&A & Diskussionen</span>
-                                </li>
-                            </ul>
-                            <div className="pt-6">
-                                <Link href="/">
-                                    <Button variant="outline">Zurück zum Event</Button>
-                                </Link>
-                            </div>
+                            <p className="text-slate-400">Sobald Events sichtbar sind, erscheinen sie hier.</p>
                         </div>
                     ) : (
-                        pastEvents.map(event => (
+                        activeEvents.map(event => (
                             <div key={event.id} className="relative pl-8 md:pl-12 border-l border-white/10 space-y-8 pb-12 last:pb-0">
                                 {/* Timeline Dot */}
                                 <div className="absolute left-[-5px] top-0 w-2.5 h-2.5 rounded-full bg-theme-primary shadow-[0_0_10px_theme('colors.cyan.500')]"></div>
@@ -180,35 +160,65 @@ export default function ArchivePage() {
                                     <div>
                                         <span className="text-xs font-mono text-theme-primary mb-2 block">{formatDate(event.date)}</span>
                                         <h2 className="text-3xl font-bold text-white mb-2">{event.title}</h2>
-                                        <p className="text-slate-400 max-w-3xl leading-relaxed">{event.description}</p>
+                                        <p className="text-slate-400 max-w-3xl leading-relaxed whitespace-pre-wrap">
+                                            {(event.longDescription || event.description).split(/(\*\*.*?\*\*)/).map((part, i) =>
+                                                part.startsWith('**') && part.endsWith('**') ?
+                                                    <strong key={i} className="text-white">{part.slice(2, -2)}</strong> :
+                                                    part
+                                            )}
+                                        </p>
                                     </div>
 
                                     {/* Main Content Card */}
-                                    <Card className="bg-slate-900/40 border-white/5 overflow-hidden">
-                                        {/* Video Area */}
-                                        {event.youtubeId?.replay && (
-                                            <div className="aspect-video bg-black relative group cursor-pointer border-b border-white/5">
-                                                <iframe
-                                                    className="w-full h-full"
-                                                    src={`https://www.youtube.com/embed/${event.youtubeId.replay}`}
-                                                    title={event.title}
-                                                    allowFullScreen
-                                                />
-                                            </div>
-                                        )}
+                                    <div className="grid gap-6">
+                                        {/* Live Stream / Replay Area */}
+                                        {event.youtubeId?.replay ? (
+                                            <Card className="bg-slate-900/40 border-white/5 overflow-hidden">
+                                                <div className="aspect-video bg-black relative group cursor-pointer border-b border-white/5">
+                                                    <iframe
+                                                        className="w-full h-full"
+                                                        src={`https://www.youtube.com/embed/${event.youtubeId.replay}`}
+                                                        title={event.title}
+                                                        allowFullScreen
+                                                    />
+                                                </div>
+                                            </Card>
+                                        ) : event.youtubeId?.live && event.youtubeId.live.includes("meet.google.com") ? (
+                                            <Card className="p-6 bg-gradient-to-r from-blue-900/20 to-purple-900/20 border-blue-500/30">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="space-y-1">
+                                                        <h3 className="text-lg font-bold text-blue-200">Online Stream Access</h3>
+                                                        <p className="text-sm text-blue-300/60">Google Meet Link für Online-Teilnehmer</p>
+                                                    </div>
+                                                    <a
+                                                        href={event.youtubeId.live.startsWith('http') ? event.youtubeId.live : `https://${event.youtubeId.live}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        <Button variant="signal" className="bg-blue-600 hover:bg-blue-500 text-white border-blue-400/50">
+                                                            <Video className="w-4 h-4 mr-2" />
+                                                            Join Stream
+                                                        </Button>
+                                                    </a>
+                                                </div>
+                                            </Card>
+                                        ) : null}
 
                                         {/* Resources Toolbar */}
-                                        <div className="p-4 flex flex-wrap gap-4 bg-white/5">
-                                            {event.assets.length > 0 ? event.assets.map((asset, i) => (
-                                                <a key={i} href={asset.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-slate-300 hover:text-white transition-colors bg-white/5 px-3 py-1.5 rounded-lg border border-white/5 hover:border-white/20">
-                                                    <Download className="w-4 h-4 text-theme-primary" />
-                                                    {asset.label}
-                                                </a>
-                                            )) : (
-                                                <span className="text-sm text-slate-500 italic">Keine Assets verfügbar.</span>
-                                            )}
-                                        </div>
-                                    </Card>
+                                        <Card className="p-4 bg-slate-900/40 border-white/5">
+                                            <h4 className="text-xs font-bold text-slate-500 uppercase mb-3">Event Resources</h4>
+                                            <div className="flex flex-wrap gap-4">
+                                                {event.assets.length > 0 ? event.assets.map((asset, i) => (
+                                                    <a key={i} href={asset.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-slate-300 hover:text-white transition-colors bg-white/5 px-3 py-1.5 rounded-lg border border-white/5 hover:border-white/20">
+                                                        {asset.type === 'link' ? <ExternalLink className="w-4 h-4 text-theme-primary" /> : <Download className="w-4 h-4 text-theme-primary" />}
+                                                        {asset.label}
+                                                    </a>
+                                                )) : (
+                                                    <span className="text-sm text-slate-500 italic">Keine Assets verfügbar.</span>
+                                                )}
+                                            </div>
+                                        </Card>
+                                    </div>
 
                                     {/* Discussion / Forum Thread */}
                                     <CommentSection eventId={event.id} user={user} />

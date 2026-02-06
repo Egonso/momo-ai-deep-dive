@@ -9,7 +9,7 @@ import { EventConfig } from '@/data/events';
 import { Mail, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { auth, db } from '@/lib/firebase';
 import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, User, sendSignInLinkToEmail, isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth';
-import { doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, deleteDoc, query, collection, where, getDocs } from 'firebase/firestore';
 
 interface Attendee {
     name: string;
@@ -43,6 +43,41 @@ export function RsvpFlow({ event }: RsvpFlowProps) {
             }
         });
         return () => unsubscribe();
+    }, [event.id]);
+
+    // Fetch Capacity
+    const [seatsLeft, setSeatsLeft] = useState(5);
+    useEffect(() => {
+        const fetchCapacity = async () => {
+            try {
+                // Determine capacity based on event settings
+                let maxCapacity = 25; // Default
+
+                // Fetch Event Settings from Firestore
+                const eventRef = doc(db, "events", event.id);
+                const eventSnap = await getDoc(eventRef);
+                if (eventSnap.exists() && eventSnap.data().capacity) {
+                    maxCapacity = eventSnap.data().capacity;
+                }
+
+                const q = query(collection(db, 'rsvps'), where('eventId', '==', event.id), where('type', '==', 'in-person'));
+                const snapshot = await getDocs(q);
+
+                // Count attendees (handling +Guests logic if stored, otherwise 1 per doc)
+                let count = 0;
+                snapshot.docs.forEach(d => {
+                    const data = d.data();
+                    count += (data.attendees?.length || 1);
+                });
+
+                const realLeft = Math.max(0, maxCapacity - count);
+                // Show real availability (no fake scarcity)
+                setSeatsLeft(realLeft);
+            } catch (err) {
+                console.error("Error fetching capacity", err);
+            }
+        };
+        fetchCapacity();
     }, [event.id]);
 
     // Check for Magic Link on Mount
@@ -260,7 +295,7 @@ export function RsvpFlow({ event }: RsvpFlowProps) {
 
                 {/* Mode Switcher inside Form */}
                 <div className="bg-black/20 p-2 rounded-xl mb-4">
-                    <RsvpToggle mode={mode} onChange={setMode} penthouseSeatsLeft={4} />
+                    <RsvpToggle mode={mode} onChange={setMode} penthouseSeatsLeft={seatsLeft} />
                 </div>
 
                 <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
@@ -309,7 +344,7 @@ export function RsvpFlow({ event }: RsvpFlowProps) {
                         fullWidth
                         onClick={submitRsvp}
                         isLoading={status === 'loading'}
-                        disabled={attendees.some(a => !a.name || !a.email || !a.whatsapp)}
+                        disabled={attendees.some(a => !a.name || !a.email)}
                     >
                         {existingRsvp ? 'Update speichern' : 'Anmeldung abschließen'}
                     </Button>
@@ -412,7 +447,7 @@ export function RsvpFlow({ event }: RsvpFlowProps) {
                 <RsvpToggle
                     mode={mode}
                     onChange={setMode}
-                    penthouseSeatsLeft={4} // TODO: Fetch real count from Firestore
+                    penthouseSeatsLeft={seatsLeft}
                 />
             </div>
 
@@ -429,7 +464,7 @@ export function RsvpFlow({ event }: RsvpFlowProps) {
             </Button>
 
             <p className="text-xs text-center text-slate-500">
-                Mit der Anmeldung akzeptierst du den <span className="underline decoration-dotted hover:text-slate-300">Code of Conduct</span>.
+
             </p>
         </div>
     );

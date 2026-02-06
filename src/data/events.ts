@@ -31,10 +31,19 @@ export const EVENTS: EventConfig[] = [
         id: "feb-2026-skills",
         title: "Agent Skills: Vom Tool zum Alleskönner",
         description: "Wie du ein 'KI Coding Tool' in deinen persönlichen Super-Assistenten verwandelst. Wir machen Tools zu Fähigkeiten.",
-        longDescription: "Wir nutzen ein Tool, das viele bisher nur als 'KI Coding Tool' kannten, und verwandeln es in einen ALLESKÖNNER - der von jedem mit einfachen Prompts ohne Coden bedient werden kann. Jedes Tool das ich bisher gezeigt habe kann es nicht nur integrieren, sondern zu einem wiederholbaren und teilbaren Prozess machen. Es ist wie wir in Zukunft mit dem Computer umgehen.",
-        theme: "ocean", // New theme!
-        date: "2026-02-02T19:30:00.000Z", // Next Event
-        revealAt: "2026-01-10T08:00:00.000Z", // Visible NOW
+        longDescription: `
+**Was ist ein \"Skill\"?**
+Stell dir vor, dein KI-Assistent könnte nicht nur chatten, sondern *handeln*. Ein Skill ist ein Paket aus Wissen und Werkzeugen, das du deinem Agenten gibst.
+Statt jedes Mal zu erklären \"Erstelle eine Rechnung als PDF\", gibst du ihm einmal den \"Invoice-Skill\" – und er kann es für immer.
+
+In diesem Deep Dive bauen wir solche Fähigkeiten. Wir verwandeln einmalige Prompts in dauerhafte Power-Tools.
+
+**Bitte mitbringen:**
+Laptops gerne mitnehmen! Es ist keine Pflicht, aber von großem Vorteil, um direkt mitzumachen.
+        `,
+        theme: "ocean",
+        date: "2026-02-02T18:30:00.000Z", // 2026-02-02 19:30 Local
+        revealAt: "2026-01-10T08:00:00.000Z",
         durationHours: 2,
         location: "Penthouse Büro",
         address: "Magazinstraße 4, 5020 Salzburg",
@@ -47,16 +56,16 @@ export const EVENTS: EventConfig[] = [
             "Recherche & Bilderstellung im eigenen CI"
         ],
         assets: [
-            { label: "87k Skills Library", type: "link", url: "#" }
+            { label: "SkillsMP - The Skills Library", type: "link", url: "https://skillsmp.com/" }
         ],
         youtubeId: {
-            live: "dQw4w9WgXcQ" // Rick Roll Placeholder for Live Test
+            live: "meet.google.com/ood-roxf-hpn" // Using this field for the Meet link for now, UI will need to handle it or we add a new field
         }
     },
     {
         id: "mar-2026-rag",
-        title: "RAG & Vector Databases Masterclass",
-        description: "Dein 'Second Brain' bauen mit Pinecone und Embeddings.",
+        title: "Thema noch geheim",
+        description: "Details werden bald bekannt gegeben.",
         theme: "amber",
         date: "2026-03-02T19:30:00.000Z", // 1st Monday March
         revealAt: "2026-02-03T08:00:00.000Z",

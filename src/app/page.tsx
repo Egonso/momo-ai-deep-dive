@@ -122,8 +122,8 @@ export default function Home() {
                 <Clock className="w-6 h-6" />
               </div>
               <div>
-                <p className="font-bold text-white text-base">19:30 Uhr</p>
-                <p className="text-slate-400">Einlass ab 19:15</p>
+                <p className="font-bold text-white text-base">{new Date(activeEvent.date).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })} Uhr</p>
+                <p className="text-slate-400">Einlass ab {new Date(new Date(activeEvent.date).getTime() - 15 * 60000).toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' })}</p>
               </div>
             </div>
           </div>

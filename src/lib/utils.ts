@@ -11,8 +11,8 @@ export const TIME_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
+    // hour: '2-digit', // Removed to avoid duplication
+    // minute: '2-digit',
 };
 
 export const formatDate = (dateString: string) => {

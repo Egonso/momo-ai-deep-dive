@@ -12,7 +12,7 @@ interface RsvpToggleProps {
 
 export function RsvpToggle({ mode, onChange, penthouseSeatsLeft }: RsvpToggleProps) {
     return (
-        <div className="bg-zinc-900/50 p-1 rounded-xl border border-white/5 flex relative">
+        <div className="bg-zinc-900/50 p-1 rounded-xl border border-white/5 flex relative mb-6">
             <button
                 onClick={() => onChange('in-person')}
                 className={cn(
@@ -27,7 +27,9 @@ export function RsvpToggle({ mode, onChange, penthouseSeatsLeft }: RsvpTogglePro
                     "text-xs",
                     penthouseSeatsLeft > 0 ? "text-theme-primary" : "text-red-500"
                 )}>
-                    {penthouseSeatsLeft > 0 ? `${penthouseSeatsLeft} Plätze frei` : 'Warteliste'}
+                    {penthouseSeatsLeft > 0
+                        ? (penthouseSeatsLeft <= 5 ? `${penthouseSeatsLeft} Plätze frei` : 'Wenige Plätze')
+                        : 'Warteliste'}
                 </span>
             </button>
 
@@ -51,6 +53,14 @@ export function RsvpToggle({ mode, onChange, penthouseSeatsLeft }: RsvpTogglePro
                     mode === 'in-person' ? "left-1" : "left-[calc(50%+2px)]" // Simple calc for 2-item grid
                 )}
             />
+
+            {mode === 'online' && (
+                <div className="absolute -bottom-6 left-0 right-0 text-center w-full">
+                    <span className="text-[10px] text-zinc-500 animate-in fade-in slide-in-from-top-1 block">
+                        *Auf vor Ort Teilnehmende wird zuerst Rücksicht genommen
+                    </span>
+                </div>
+            )}
         </div>
     );
 }

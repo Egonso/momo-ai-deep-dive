@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 interface BadgeProps {
     children: React.ReactNode;
-    variant?: 'live' | 'default' | 'outline' | 'waitlist' | 'ocean';
+    variant?: 'live' | 'default' | 'outline' | 'waitlist' | 'ocean' | 'success' | 'info';
     className?: string;
     animate?: boolean;
 }
@@ -13,7 +13,9 @@ export function Badge({ children, variant = 'default', className, animate }: Bad
         live: "bg-red-500/10 text-red-400 border border-red-500/20",
         waitlist: "bg-amber-500/10 text-amber-400 border border-amber-500/20",
         outline: "border border-white/10 text-zinc-400",
-        ocean: "bg-theme-primary/10 text-theme-primary border border-theme-primary/20 shadow-[0_0_15px_-3px_var(--theme-primary)]"
+        ocean: "bg-theme-primary/10 text-theme-primary border border-theme-primary/20 shadow-[0_0_15px_-3px_var(--theme-primary)]",
+        success: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20",
+        info: "bg-blue-500/10 text-blue-400 border border-blue-500/20"
     };
 
     return (
