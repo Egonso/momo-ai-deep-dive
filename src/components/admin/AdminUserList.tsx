@@ -35,15 +35,16 @@ export function AdminUserList() {
     const [scanning, setScanning] = useState(false);
     const [scanResult, setScanResult] = useState<{ success: boolean, message: string } | null>(null);
 
-    // Use the next active event for context
-    const activeEventId = EVENTS[0].id; // "feb-2026-skills"
+    // Event Selection State
+    const [selectedEventId, setSelectedEventId] = useState(EVENTS[0].id);
 
     const fetchRsvps = async () => {
         setLoading(true);
         try {
             // Fetch all RSVPs for this event
             // Note: In a real large app, we'd index this. For <100 users, finding all is fine.
-            const q = query(collection(db, "rsvps"), where("eventId", "==", activeEventId));
+            // Fetch all RSVPs for the SELECTED event
+            const q = query(collection(db, "rsvps"), where("eventId", "==", selectedEventId));
             const snapshot = await getDocs(q);
             const data = snapshot.docs.map(doc => ({
                 id: doc.id,
@@ -62,7 +63,7 @@ export function AdminUserList() {
 
     useEffect(() => {
         fetchRsvps();
-    }, []);
+    }, [selectedEventId]);
 
     const handleDelete = async (id: string) => {
         if (!confirm("Wirklich löschen? Das Ticket wird ungültig.")) return;
@@ -247,7 +248,25 @@ export function AdminUserList() {
             </div>
 
             {/* Controls */}
-            <div className="flex gap-3">
+            <div className="flex flex-col md:flex-row gap-3">
+                {/* Event Selector */}
+                <div className="relative min-w-[200px]">
+                    <select
+                        value={selectedEventId}
+                        onChange={(e) => setSelectedEventId(e.target.value)}
+                        className="w-full bg-slate-900 border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-theme-primary/50 appearance-none cursor-pointer"
+                    >
+                        {EVENTS.map(ev => (
+                            <option key={ev.id} value={ev.id}>
+                                {ev.title} ({new Date(ev.date).toLocaleDateString('de-DE', { month: 'short', year: 'numeric' })})
+                            </option>
+                        ))}
+                    </select>
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                        ▼
+                    </div>
+                </div>
+
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                     <input

@@ -67,7 +67,7 @@ Laptops gerne mitnehmen! Es ist keine Pflicht, aber von großem Vorteil, um dire
         title: "Thema noch geheim",
         description: "Details werden bald bekannt gegeben.",
         theme: "amber",
-        date: "2026-03-02T19:30:00.000Z", // 1st Monday March
+        date: "2026-03-02T18:30:00.000Z", // 1st Monday March (19:30 CET)
         revealAt: "2026-02-03T08:00:00.000Z",
         durationHours: 3,
         location: "Penthouse Büro",
