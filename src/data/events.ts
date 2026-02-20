@@ -64,8 +64,22 @@ Laptops gerne mitnehmen! Es ist keine Pflicht, aber von großem Vorteil, um dire
     },
     {
         id: "mar-2026-rag",
-        title: "Thema noch geheim",
-        description: "Details werden bald bekannt gegeben.",
+        title: "KI-News-Stammtisch: Monatsrückblick & Agentic Work",
+        description: "Ein Deep Dive in die Woche der Giganten: OpenAI vs Anthropic, OpenClaw Saga, und wie Agentic Coding die Arbeitswelt verändert.",
+        longDescription: `
+**Der Februar war wild.**
+In den letzten 30 Tagen ist mehr passiert als im gesamten letzten Halbjahr. Wir sortieren das Chaos:
+
+**Themen:**
+*   **Giganten-Krieg:** OpenAI (GPT-4.5/5.3) vs. Anthropic (Claude 3.7/4.6) - Wer führt wirklich?
+*   **OpenClaw Saga:** Wie ein viraler Open-Source Agent in 2 Wochen von \"Hype\" zu \"Security Nightmare\" zu \"Acquired by OpenAI\" wurde.
+*   **Agentic Coding:** Warum Tools wie *Codex App* und *Clauda Code* die Art wie wir Software bauen für immer verändern.
+*   **Video & IP:** Sora, Kling 3.0, Seedance 2.0 - und die Klagen von Disney & Co.
+*   **Regulatory & Moral:** Pentagon vs. AI Labs, EU AI Act Umsetzung in DE/AT und was \"Alignment\" heute bedeutet.
+
+**Für wen ist das?**
+Für Unternehmer, Devs und Entscheider, die verstehen wollen, wohin die Reise geht (und zwar nicht erst in 5 Jahren, sondern nächsten Montag).
+        `,
         theme: "amber",
         date: "2026-03-02T18:30:00.000Z", // 1st Monday March (19:30 CET)
         revealAt: "2026-02-03T08:00:00.000Z",
@@ -73,6 +87,13 @@ Laptops gerne mitnehmen! Es ist keine Pflicht, aber von großem Vorteil, um dire
         location: "Penthouse Büro",
         address: "Magazinstraße 4, 5020 Salzburg",
         capacity: 25,
+        takeaways: [
+            "Agentic Coding Workflows & Best Practices",
+            "Security & Compliance Update (EU AI Act)",
+            "Latest Model Benchmarks (God Mode vs. Flash Mode)",
+            "Marktübersicht: Wer gewinnt das 'Frontier' Rennen?",
+            "Netzwerken mit Salzburgs KI-Szene"
+        ],
         assets: []
     }
 ];
