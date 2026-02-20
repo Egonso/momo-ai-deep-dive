@@ -204,20 +204,39 @@ export default function ArchivePage() {
                                             </Card>
                                         ) : null}
 
-                                        {/* Resources Toolbar */}
-                                        <Card className="p-4 bg-slate-900/40 border-white/5">
-                                            <h4 className="text-xs font-bold text-slate-500 uppercase mb-3">Event Resources</h4>
-                                            <div className="flex flex-wrap gap-4">
-                                                {event.assets.length > 0 ? event.assets.map((asset, i) => (
-                                                    <a key={i} href={asset.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-slate-300 hover:text-white transition-colors bg-white/5 px-3 py-1.5 rounded-lg border border-white/5 hover:border-white/20">
-                                                        {asset.type === 'link' ? <ExternalLink className="w-4 h-4 text-theme-primary" /> : <Download className="w-4 h-4 text-theme-primary" />}
-                                                        {asset.label}
-                                                    </a>
-                                                )) : (
-                                                    <span className="text-sm text-slate-500 italic">Keine Assets verfügbar.</span>
-                                                )}
+                                        {/* Premium Resources Grid */}
+                                        {event.assets.length > 0 && (
+                                            <div className="space-y-4 pt-2">
+                                                <div className="flex items-center gap-3">
+                                                    <h4 className="text-sm font-bold text-theme-primary uppercase tracking-widest">Event Ressourcen</h4>
+                                                    <div className="h-px bg-theme-primary/20 flex-1" />
+                                                </div>
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                    {event.assets.map((asset, i) => (
+                                                        <a
+                                                            key={i}
+                                                            href={asset.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="group flex flex-col justify-center p-4 bg-slate-900/50 hover:bg-theme-primary/10 border border-white/5 hover:border-theme-primary/30 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-[0_0_20px_rgba(6,182,212,0.15)] relative overflow-hidden"
+                                                        >
+                                                            <div className="absolute top-0 right-0 w-32 h-32 bg-theme-primary/5 rounded-full blur-[40px] group-hover:bg-theme-primary/20 transition-colors" />
+                                                            <div className="relative z-10 flex items-center gap-4">
+                                                                <div className="w-10 h-10 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform shadow-inner">
+                                                                    {asset.type === 'link' ? <ExternalLink className="w-5 h-5 text-theme-primary" /> : <Download className="w-5 h-5 text-emerald-400" />}
+                                                                </div>
+                                                                <div>
+                                                                    <p className="font-bold text-slate-200 group-hover:text-white transition-colors text-sm">{asset.label}</p>
+                                                                    <p className="text-[10px] text-slate-500 uppercase tracking-widest mt-1">
+                                                                        {asset.type === 'pdf' ? 'PDF DOKUMENT' : asset.type === 'code' ? 'ZIP DOWNLOAD' : 'EXTERNER LINK'}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    ))}
+                                                </div>
                                             </div>
-                                        </Card>
+                                        )}
                                     </div>
 
                                     {/* Discussion / Forum Thread */}

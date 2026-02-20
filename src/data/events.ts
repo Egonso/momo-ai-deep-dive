@@ -56,6 +56,9 @@ Laptops gerne mitnehmen! Es ist keine Pflicht, aber von großem Vorteil, um dire
             "Recherche & Bilderstellung im eigenen CI"
         ],
         assets: [
+            { label: "Agentic Workflow Starter Kit (.zip)", type: "code", url: "/assets/events/feb-2026/Agentic_Skills_Starter_Kit.zip" },
+            { label: "Präsentation Handout (.pdf)", type: "pdf", url: "/assets/events/feb-2026/Agentic_Skills_Presentation.pdf" },
+            { label: "Skill Creator auf SkillsMP", type: "link", url: "https://skillsmp.com/" },
             { label: "SkillsMP - The Skills Library", type: "link", url: "https://skillsmp.com/" }
         ],
         youtubeId: {
