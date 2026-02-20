@@ -211,8 +211,28 @@ export default function ArchivePage() {
                                                     <h4 className="text-sm font-bold text-theme-primary uppercase tracking-widest">Event Ressourcen</h4>
                                                     <div className="h-px bg-theme-primary/20 flex-1" />
                                                 </div>
+
+                                                {/* Embedded Videos */}
+                                                {event.assets.filter(a => a.type === 'video').map((asset, i) => (
+                                                    <div key={`video-${i}`} className="rounded-2xl overflow-hidden border border-white/10 bg-black">
+                                                        <div className="aspect-video">
+                                                            <iframe
+                                                                src={asset.url}
+                                                                className="w-full h-full"
+                                                                allow="autoplay; encrypted-media"
+                                                                allowFullScreen
+                                                                title={asset.label}
+                                                            />
+                                                        </div>
+                                                        <div className="px-4 py-3 bg-slate-900/80 border-t border-white/5">
+                                                            <p className="text-sm font-medium text-slate-300">{asset.label}</p>
+                                                        </div>
+                                                    </div>
+                                                ))}
+
+                                                {/* Download & Link Assets */}
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                                    {event.assets.map((asset, i) => (
+                                                    {event.assets.filter(a => a.type !== 'video').map((asset, i) => (
                                                         <a
                                                             key={i}
                                                             href={asset.url}

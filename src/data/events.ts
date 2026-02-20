@@ -59,7 +59,9 @@ Laptops gerne mitnehmen! Es ist keine Pflicht, aber von großem Vorteil, um dire
             { label: "Agentic Workflow Starter Kit (.zip)", type: "code", url: "/assets/events/feb-2026/Agentic_Skills_Starter_Kit.zip" },
             { label: "Präsentation Handout (.pdf)", type: "pdf", url: "/assets/events/feb-2026/Agentic_Skills_Presentation.pdf" },
             { label: "Skill Creator auf SkillsMP", type: "link", url: "https://skillsmp.com/" },
-            { label: "SkillsMP - The Skills Library", type: "link", url: "https://skillsmp.com/" }
+            { label: "SkillsMP - The Skills Library", type: "link", url: "https://skillsmp.com/" },
+            { label: "AI Wednesday Recording (Video)", type: "video", url: "https://drive.google.com/file/d/1QUJxO0yfrQZFeHLNoRMBR1qfiObj5xFa/preview" },
+            { label: "AI Wednesday Link-Sammlung", type: "link", url: "https://www.one-tab.com/page/1v3Y2-EcRP-7QkrNKLzHLg" }
         ],
         youtubeId: {
             live: "meet.google.com/ood-roxf-hpn" // Using this field for the Meet link for now, UI will need to handle it or we add a new field
@@ -67,21 +69,21 @@ Laptops gerne mitnehmen! Es ist keine Pflicht, aber von großem Vorteil, um dire
     },
     {
         id: "mar-2026-rag",
-        title: "KI-News-Stammtisch: Monatsrückblick & Agentic Work",
-        description: "Ein Deep Dive in die Woche der Giganten: OpenAI vs Anthropic, OpenClaw Saga, und wie Agentic Coding die Arbeitswelt verändert.",
+        title: "Agentic Working: Bau dir dein agentisches Team auf",
+        description: "2024 war Prompt Engineering. 2025 Kontext Engineering. 2026 ist Access Engineering – wem gibst du welche Zugriffe? Wer jetzt nicht anfängt, hat ab nächstem Jahr ein Problem.",
         longDescription: `
-**Der Februar war wild.**
-In den letzten 30 Tagen ist mehr passiert als im gesamten letzten Halbjahr. Wir sortieren das Chaos:
+**Die Evolution der KI-Skills:**
+*   **2024:** Prompt Engineering – wer die richtigen Fragen stellt, bekommt die besseren Antworten.
+*   **2025:** Kontext Engineering – wer seinem Agenten das richtige Wissen gibt, bekommt echte Ergebnisse.
+*   **2026:** Access Engineering – wem gibst du genau welche Zugriffe? Dein Agent braucht Augen, Hände und Berechtigungen.
 
-**Themen:**
-*   **Giganten-Krieg:** OpenAI (GPT-4.5/5.3) vs. Anthropic (Claude 3.7/4.6) - Wer führt wirklich?
-*   **OpenClaw Saga:** Wie ein viraler Open-Source Agent in 2 Wochen von \"Hype\" zu \"Security Nightmare\" zu \"Acquired by OpenAI\" wurde.
-*   **Agentic Coding:** Warum Tools wie *Codex App* und *Clauda Code* die Art wie wir Software bauen für immer verändern.
-*   **Video & IP:** Sora, Kling 3.0, Seedance 2.0 - und die Klagen von Disney & Co.
-*   **Regulatory & Moral:** Pentagon vs. AI Labs, EU AI Act Umsetzung in DE/AT und was \"Alignment\" heute bedeutet.
+**Warum du kommen solltest:**
+Ich zeige euch live, wie ich mein eigenes agentisches Team aufgebaut habe – inklusive aller Fehlversuche. Die mehrfachen Deinstallationen, die Reinstallationen um 3 Uhr nachts, die Momente wo alles kaputt war. Und wie es am Ende doch funktioniert hat.
 
-**Für wen ist das?**
-Für Unternehmer, Devs und Entscheider, die verstehen wollen, wohin die Reise geht (und zwar nicht erst in 5 Jahren, sondern nächsten Montag).
+Wer jetzt nicht anfängt, ist ab nächstem Jahr nicht mehr vorbereitet auf die Art, wie wir arbeiten werden. Das ist kein Hype – das ist der neue Stack.
+
+**Bitte mitbringen:**
+Laptop empfohlen! Wir bauen live.
         `,
         theme: "amber",
         date: "2026-03-02T18:30:00.000Z", // 1st Monday March (19:30 CET)
@@ -91,11 +93,11 @@ Für Unternehmer, Devs und Entscheider, die verstehen wollen, wohin die Reise ge
         address: "Magazinstraße 4, 5020 Salzburg",
         capacity: 25,
         takeaways: [
-            "Agentic Coding Workflows & Best Practices",
-            "Security & Compliance Update (EU AI Act)",
-            "Latest Model Benchmarks (God Mode vs. Flash Mode)",
-            "Marktübersicht: Wer gewinnt das 'Frontier' Rennen?",
-            "Netzwerken mit Salzburgs KI-Szene"
+            "Von Prompt Engineering → Kontext Engineering → Access Engineering",
+            "Dein eigenes agentisches Team aufbauen (live Demo)",
+            "Die häufigsten Fehler & Fehlversuche (aus erster Hand)",
+            "Access Engineering: Wem gibst du welche Zugriffe?",
+            "Vorbereitet sein auf die Arbeitswelt ab 2027"
         ],
         assets: []
     }
